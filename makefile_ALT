@@ -1,0 +1,13 @@
+todo: test hellotriangle
+
+test: test.c
+	gcc -o test test.c -lGL -lGLEW -lglfw
+
+hellotriangle: hellotriangle.c
+	gcc -o hellotriangle hellotriangle.c -lGL -lGLEW -lglfw
+
+clean:
+	rm -f *.o *~
+
+cleanall: clean
+	rm -f test hellotriangle
