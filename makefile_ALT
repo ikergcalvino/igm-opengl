@@ -16,7 +16,7 @@ movingtriangle: movingtriangle.c
 	gcc -o movingtriangle movingtriangle.c -lGL -lGLEW -lglfw -lm
 
 spinningcube: spinningcube.cpp
-	g++ -o spinnningcube spinningcube.cpp -lGL -lGLEW -lglfw
+	g++ -o spinningcube spinningcube.cpp -lGL -lGLEW -lglfw
 
 clean:
 	rm -f *.o *~
