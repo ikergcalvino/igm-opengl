@@ -1,4 +1,4 @@
-todo: test hellotriangle helloviewport adaptviewport movingtriangle
+todo: test hellotriangle helloviewport adaptviewport movingtriangle spinningcube
 
 test: test.c
 	gcc -o test test.c -lGL -lGLEW -lglfw
@@ -15,8 +15,11 @@ adaptviewport: adaptviewport.c
 movingtriangle: movingtriangle.c
 	gcc -o movingtriangle movingtriangle.c -lGL -lGLEW -lglfw -lm
 
+spinningcube: spinningcube.cpp
+	g++ -o spinnningcube spinningcube.cpp -lGL -lGLEW -lglfw
+
 clean:
 	rm -f *.o *~
 
 cleanall: clean
-	rm -f test hellotriangle helloviewport adaptviewport movingtriangle
+	rm -f test hellotriangle helloviewport adaptviewport movingtriangle spinningcube
