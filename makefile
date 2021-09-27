@@ -1,4 +1,4 @@
-todo: test hellotriangle helloviewport adaptviewport movingtriangle spinningcube
+todo: test hellotriangle helloviewport adaptviewport movingtriangle spinningcube hellotexture hellotexture2
 
 LDLIBS=-lGL -lGLEW -lglfw -lm
 
@@ -6,4 +6,4 @@ clean:
 	rm -f *.o *~
 
 cleanall: clean
-	rm -f test hellotriangle helloviewport adaptviewport movingtriangle spinningcube
+	rm -f test hellotriangle helloviewport adaptviewport movingtriangle spinningcube hellotexture hellotexture2
