@@ -1,5 +1,5 @@
 todo: test hellotriangle helloviewport adaptviewport movingtriangle \
-	spinningcube hellotexture hellotexture2
+	spinningcube hellotexture hellotexture2 multitex multitex2
 
 test: test.c
 	gcc -o test test.c -lGL -lGLEW -lglfw
@@ -25,9 +25,15 @@ hellotexture: hellotexture.c
 hellotexture2: hellotexture2.c
 	gcc -o hellotexture2 hellotexture2.c -lGL -lGLEW -lglfw -lm
 
+multitex: multitex.c
+	gcc -o multitex multitex.c -lGL -lGLEW -lglfw -lm
+
+multitex2: multitex2.c
+	gcc -o multitex2 multitex2.c -lGL -lGLEW -lglfw -lm
+
 clean:
 	rm -f *.o *~
 
 cleanall: clean
 	rm -f test hellotriangle helloviewport adaptviewport movingtriangle \
-		spinningcube hellotexture hellotexture2
+		spinningcube hellotexture hellotexture2 multitex multitex2
