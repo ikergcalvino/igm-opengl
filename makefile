@@ -6,4 +6,4 @@ clean:
 	rm -f *.o *~
 
 cleanall: clean
-	rm -f test hellotriangle
+	rm -f test hellotriangle helloviewport adaptviewport

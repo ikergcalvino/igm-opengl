@@ -1,4 +1,4 @@
-todo: test hellotriangle
+todo: test hellotriangle helloviewport adaptviewport
 
 test: test.c
 	gcc -o test test.c -lGL -lGLEW -lglfw
@@ -6,8 +6,14 @@ test: test.c
 hellotriangle: hellotriangle.c
 	gcc -o hellotriangle hellotriangle.c -lGL -lGLEW -lglfw
 
+helloviewport: helloviewport.c
+	gcc -o helloviewport helloviewport.c -lGL -lGLEW -lglfw
+
+adaptviewport: adaptviewport.c
+	gcc -o adaptviewport adaptviewport.c -lGL -lGLEW -lglfw
+
 clean:
 	rm -f *.o *~
 
 cleanall: clean
-	rm -f test hellotriangle
+	rm -f test hellotriangle helloviewport adaptviewport
