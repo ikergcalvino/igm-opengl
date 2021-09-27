@@ -1,4 +1,4 @@
-todo: test hellotriangle
+todo: test hellotriangle helloviewport adaptviewport
 
 LDLIBS=-lGL -lGLEW -lglfw
 
