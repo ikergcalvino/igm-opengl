@@ -14,17 +14,19 @@
 int gl_width = 640;
 int gl_height = 480;
 
-void glfw_window_size_callback(GLFWwindow* window, int width, int height);
+void glfw_window_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void render(void);
 
 GLuint shader_program = 0; // shader program to set render pipeline
-GLuint vao = 0; // Vertext Array Object to set input data
-GLuint texture = 0; // Texture to paste on polygon
+GLuint vao = 0;            // Vertext Array Object to set input data
+GLuint texture = 0;        // Texture to paste on polygon
 
-int main() {
+int main()
+{
   // start GL context and O/S window using the GLFW helper library
-  if (!glfwInit()) {
+  if (!glfwInit())
+  {
     fprintf(stderr, "ERROR: could not start GLFW3\n");
     return 1;
   }
@@ -34,8 +36,9 @@ int main() {
   //  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(gl_width, gl_height, "Hello Texture", NULL, NULL);
-  if (!window) {
+  GLFWwindow *window = glfwCreateWindow(gl_width, gl_height, "Hello Texture", NULL, NULL);
+  if (!window)
+  {
     fprintf(stderr, "ERROR: could not open window with GLFW3\n");
     glfwTerminate();
     return 1;
@@ -48,10 +51,10 @@ int main() {
   glewInit();
 
   // get version info
-  const GLubyte* vendor = glGetString(GL_VENDOR); // get vendor string
-  const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-  const GLubyte* glversion = glGetString(GL_VERSION); // version as a string
-  const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
+  const GLubyte *vendor = glGetString(GL_VENDOR);                        // get vendor string
+  const GLubyte *renderer = glGetString(GL_RENDERER);                    // get renderer string
+  const GLubyte *glversion = glGetString(GL_VERSION);                    // version as a string
+  const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
   printf("Vendor: %s\n", vendor);
   printf("Renderer: %s\n", renderer);
   printf("OpenGL version supported %s\n", glversion);
@@ -59,25 +62,25 @@ int main() {
   printf("Starting viewport: (width: %d, height: %d)\n", gl_width, gl_height);
 
   // Vertex Shader
-  const char* vertex_shader =
-    "#version 130\n"
-    "in vec3 v_pos;"
-    "in vec2 tex_coord;"
-    "out vec2 vs_tex_coord;"
-    "void main() {"
-    "  gl_Position = vec4(v_pos, 1.0);"
-    "  vs_tex_coord = tex_coord;"
-    "}";
+  const char *vertex_shader =
+      "#version 130\n"
+      "in vec3 v_pos;"
+      "in vec2 tex_coord;"
+      "out vec2 vs_tex_coord;"
+      "void main() {"
+      "  gl_Position = vec4(v_pos, 1.0);"
+      "  vs_tex_coord = tex_coord;"
+      "}";
 
   // Fragment Shader
-  const char* fragment_shader =
-    "#version 130\n"
-    "out vec4 frag_col;"
-    "in vec2 vs_tex_coord;"
-    "uniform sampler2D theTexture;"
-    "void main() {"
-    "  frag_col = texture(theTexture, vs_tex_coord);"
-    "}";
+  const char *fragment_shader =
+      "#version 130\n"
+      "out vec4 frag_col;"
+      "in vec2 vs_tex_coord;"
+      "uniform sampler2D theTexture;"
+      "void main() {"
+      "  frag_col = texture(theTexture, vs_tex_coord);"
+      "}";
 
   // Shaders compilation
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -99,16 +102,14 @@ int main() {
 
   // Triangle to be rendered (NDC)
   float points[] = {
-   -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f,  0.5f, 0.0f
-  };
+      -0.5f, -0.5f, 0.0f,
+      0.5f, -0.5f, 0.0f,
+      0.0f, 0.5f, 0.0f};
 
   float texCoords[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.5f, 1.0f
-  };
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      0.5f, 1.0f};
 
   // VAO, VBOs
   GLuint vbo[2];
@@ -155,11 +156,14 @@ int main() {
   unsigned char *data = stbi_load("texture.jpg", &width, &height, &nrChannels, 0);
   // Image from http://www.flickr.com/photos/seier/4364156221
   // CC-BY-SA 2.0
-  if (data) {
+  if (data)
+  {
     // Generate texture from image
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
+  }
+  else
+  {
     printf("Failed to load texture\n");
   }
 
@@ -167,7 +171,8 @@ int main() {
   stbi_image_free(data);
 
   // Render loop
-  while(!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window))
+  {
 
     processInput(window);
 
@@ -186,7 +191,8 @@ int main() {
   return 0;
 }
 
-void render(void) {
+void render(void)
+{
   // wipe the drawing surface clear
   glClear(GL_COLOR_BUFFER_BIT);
 
@@ -201,19 +207,24 @@ void render(void) {
   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void processInput(GLFWwindow *window) {
-  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+void processInput(GLFWwindow *window)
+{
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, 1);
 
   // Switch fill/wireframe view mode with key v
   static GLenum view_mode = GL_FILL;
   static int allowchange = 5;
 
-  if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+  if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+  {
 
-    if (allowchange > 0) {
+    if (allowchange > 0)
+    {
       allowchange--;
-    } else {
+    }
+    else
+    {
       allowchange = 5;
 
       if (view_mode == GL_FILL)
@@ -229,7 +240,8 @@ void processInput(GLFWwindow *window) {
 }
 
 // Callback function to track window size and update viewport
-void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+void glfw_window_size_callback(GLFWwindow *window, int width, int height)
+{
   gl_width = width;
   gl_height = height;
   printf("New viewport: (width: %d, height: %d)\n", width, height);

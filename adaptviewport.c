@@ -10,15 +10,18 @@ int gl_width = 640;
 int gl_height = 480;
 
 // Callback function to track window size and update viewport
-void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+void glfw_window_size_callback(GLFWwindow *window, int width, int height)
+{
   gl_width = width;
   gl_height = height;
   printf("New viewport: (width: %d, height: %d)\n", width, height);
 }
 
-int main() {
+int main()
+{
   // start GL context and O/S window using the GLFW helper library
-  if (!glfwInit()) {
+  if (!glfwInit())
+  {
     fprintf(stderr, "ERROR: could not start GLFW3\n");
     return 1;
   }
@@ -28,8 +31,9 @@ int main() {
   //  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(gl_width, gl_height, "Adaptable Viewport", NULL, NULL);
-  if (!window) {
+  GLFWwindow *window = glfwCreateWindow(gl_width, gl_height, "Adaptable Viewport", NULL, NULL);
+  if (!window)
+  {
     fprintf(stderr, "ERROR: could not open window with GLFW3\n");
     glfwTerminate();
     return 1;
@@ -42,10 +46,10 @@ int main() {
   glewInit();
 
   // get version info
-  const GLubyte* vendor = glGetString(GL_VENDOR); // get vendor string
-  const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-  const GLubyte* glversion = glGetString(GL_VERSION); // version as a string
-  const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
+  const GLubyte *vendor = glGetString(GL_VENDOR);                        // get vendor string
+  const GLubyte *renderer = glGetString(GL_RENDERER);                    // get renderer string
+  const GLubyte *glversion = glGetString(GL_VERSION);                    // version as a string
+  const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
   printf("Vendor: %s\n", vendor);
   printf("Renderer: %s\n", renderer);
   printf("OpenGL version supported %s\n", glversion);
@@ -53,20 +57,20 @@ int main() {
   printf("Starting viewport: (width: %d, height: %d)\n", gl_width, gl_height);
 
   // Vertex Shader
-  const char* vertex_shader =
-    "#version 130\n"
-    "in vec3 v_pos;"
-    "void main() {"
-    "  gl_Position = vec4(v_pos, 1.0);"
-    "}";
+  const char *vertex_shader =
+      "#version 130\n"
+      "in vec3 v_pos;"
+      "void main() {"
+      "  gl_Position = vec4(v_pos, 1.0);"
+      "}";
 
   // Fragment Shader
-  const char* fragment_shader =
-    "#version 130\n"
-    "out vec4 frag_col;"
-    "void main() {"
-    "  frag_col = vec4(0.54, 0.73, 0.1, 1.0);"
-    "}";
+  const char *fragment_shader =
+      "#version 130\n"
+      "out vec4 frag_col;"
+      "void main() {"
+      "  frag_col = vec4(0.54, 0.73, 0.1, 1.0);"
+      "}";
 
   // Shaders compilation
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -93,10 +97,9 @@ int main() {
 
   // Triangle to be rendered (NDC)
   float points[] = {
-    0.0f,  0.5f,  0.0f,
-    0.5f, -0.5f,  0.0f,
-   -0.5f, -0.5f,  0.0f
-  };
+      0.0f, 0.5f, 0.0f,
+      0.5f, -0.5f, 0.0f,
+      -0.5f, -0.5f, 0.0f};
 
   // Vertex Buffer Object
   GLuint vbo = 0;
@@ -116,7 +119,8 @@ int main() {
   glBindVertexArray(0);
 
   // Render loop
-  while(!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window))
+  {
     // wipe the drawing surface clear
     glClear(GL_COLOR_BUFFER_BIT);
 
