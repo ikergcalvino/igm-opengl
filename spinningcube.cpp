@@ -11,24 +11,26 @@
 
 // GLM library to deal with matrix operations
 #include <glm/glm.hpp>
-#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/mat4x4.hpp>               // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::perspective
 #include <glm/gtc/type_ptr.hpp>
 
 int gl_width = 640;
 int gl_height = 480;
 
-void glfw_window_size_callback(GLFWwindow* window, int width, int height);
+void glfw_window_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void render(double);
 
-GLuint shader_program = 0; // shader program to set render pipeline
-GLuint vao = 0; // Vertext Array Object to set input data
+GLuint shader_program = 0;        // shader program to set render pipeline
+GLuint vao = 0;                   // Vertext Array Object to set input data
 GLint mv_location, proj_location; // Uniforms for transformation matrices
 
-int main() {
+int main()
+{
   // start GL context and O/S window using the GLFW helper library
-  if (!glfwInit()) {
+  if (!glfwInit())
+  {
     fprintf(stderr, "ERROR: could not start GLFW3\n");
     return 1;
   }
@@ -38,8 +40,9 @@ int main() {
   //  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(gl_width, gl_height, "My spinning cube", NULL, NULL);
-  if (!window) {
+  GLFWwindow *window = glfwCreateWindow(gl_width, gl_height, "My spinning cube", NULL, NULL);
+  if (!window)
+  {
     fprintf(stderr, "ERROR: could not open window with GLFW3\n");
     glfwTerminate();
     return 1;
@@ -52,10 +55,10 @@ int main() {
   glewInit();
 
   // get version info
-  const GLubyte* vendor = glGetString(GL_VENDOR); // get vendor string
-  const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-  const GLubyte* glversion = glGetString(GL_VERSION); // version as a string
-  const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
+  const GLubyte *vendor = glGetString(GL_VENDOR);                        // get vendor string
+  const GLubyte *renderer = glGetString(GL_RENDERER);                    // get renderer string
+  const GLubyte *glversion = glGetString(GL_VERSION);                    // version as a string
+  const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION); // version as a string
   printf("Vendor: %s\n", vendor);
   printf("Renderer: %s\n", renderer);
   printf("OpenGL version supported %s\n", glversion);
@@ -67,32 +70,32 @@ int main() {
   glDepthFunc(GL_LESS); // set a smaller value as "closer"
 
   // Vertex Shader
-  const char* vertex_shader =
-    "#version 130\n"
+  const char *vertex_shader =
+      "#version 130\n"
 
-    "in vec4 v_pos;"
+      "in vec4 v_pos;"
 
-    "out vec4 vs_color;"
+      "out vec4 vs_color;"
 
-    "uniform mat4 mv_matrix;"
-    "uniform mat4 proj_matrix;"
+      "uniform mat4 mv_matrix;"
+      "uniform mat4 proj_matrix;"
 
-    "void main() {"
-    "  gl_Position = proj_matrix * mv_matrix * v_pos;"
-    "  vs_color = v_pos * 2.0 + vec4(0.4, 0.4, 0.4, 0.0);"
-    "}";
+      "void main() {"
+      "  gl_Position = proj_matrix * mv_matrix * v_pos;"
+      "  vs_color = v_pos * 2.0 + vec4(0.4, 0.4, 0.4, 0.0);"
+      "}";
 
   // Fragment Shader
-  const char* fragment_shader =
-    "#version 130\n"
+  const char *fragment_shader =
+      "#version 130\n"
 
-    "out vec4 frag_col;"
+      "out vec4 frag_col;"
 
-    "in vec4 vs_color;"
+      "in vec4 vs_color;"
 
-    "void main() {"
-    "  frag_col = vs_color;"
-    "}";
+      "void main() {"
+      "  frag_col = vs_color;"
+      "}";
 
   // Shaders compilation
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -126,53 +129,53 @@ int main() {
   //       6        5
   //
   const GLfloat vertex_positions[] = {
-    -0.25f, -0.25f, -0.25f, // 1
-    -0.25f,  0.25f, -0.25f, // 0
-     0.25f, -0.25f, -0.25f, // 2
+      -0.25f, -0.25f, -0.25f, // 1
+      -0.25f, 0.25f, -0.25f,  // 0
+      0.25f, -0.25f, -0.25f,  // 2
 
-     0.25f,  0.25f, -0.25f, // 3
-     0.25f, -0.25f, -0.25f, // 2
-    -0.25f,  0.25f, -0.25f, // 0
+      0.25f, 0.25f, -0.25f,  // 3
+      0.25f, -0.25f, -0.25f, // 2
+      -0.25f, 0.25f, -0.25f, // 0
 
-     0.25f, -0.25f, -0.25f, // 2
-     0.25f,  0.25f, -0.25f, // 3
-     0.25f, -0.25f,  0.25f, // 5
+      0.25f, -0.25f, -0.25f, // 2
+      0.25f, 0.25f, -0.25f,  // 3
+      0.25f, -0.25f, 0.25f,  // 5
 
-     0.25f,  0.25f,  0.25f, // 4
-     0.25f, -0.25f,  0.25f, // 5
-     0.25f,  0.25f, -0.25f, // 3
+      0.25f, 0.25f, 0.25f,  // 4
+      0.25f, -0.25f, 0.25f, // 5
+      0.25f, 0.25f, -0.25f, // 3
 
-     0.25f, -0.25f,  0.25f, // 5
-     0.25f,  0.25f,  0.25f, // 4
-    -0.25f, -0.25f,  0.25f, // 6
+      0.25f, -0.25f, 0.25f,  // 5
+      0.25f, 0.25f, 0.25f,   // 4
+      -0.25f, -0.25f, 0.25f, // 6
 
-    -0.25f,  0.25f,  0.25f, // 7
-    -0.25f, -0.25f,  0.25f, // 6
-     0.25f,  0.25f,  0.25f, // 4
+      -0.25f, 0.25f, 0.25f,  // 7
+      -0.25f, -0.25f, 0.25f, // 6
+      0.25f, 0.25f, 0.25f,   // 4
 
-    -0.25f, -0.25f,  0.25f, // 6
-    -0.25f,  0.25f,  0.25f, // 7
-    -0.25f, -0.25f, -0.25f, // 1
+      -0.25f, -0.25f, 0.25f,  // 6
+      -0.25f, 0.25f, 0.25f,   // 7
+      -0.25f, -0.25f, -0.25f, // 1
 
-    -0.25f,  0.25f, -0.25f, // 0
-    -0.25f, -0.25f, -0.25f, // 1
-    -0.25f,  0.25f,  0.25f, // 7
+      -0.25f, 0.25f, -0.25f,  // 0
+      -0.25f, -0.25f, -0.25f, // 1
+      -0.25f, 0.25f, 0.25f,   // 7
 
-     0.25f, -0.25f, -0.25f, // 2
-     0.25f, -0.25f,  0.25f, // 5
-    -0.25f, -0.25f, -0.25f, // 1
+      0.25f, -0.25f, -0.25f,  // 2
+      0.25f, -0.25f, 0.25f,   // 5
+      -0.25f, -0.25f, -0.25f, // 1
 
-    -0.25f, -0.25f,  0.25f, // 6
-    -0.25f, -0.25f, -0.25f, // 1
-     0.25f, -0.25f,  0.25f, // 5
+      -0.25f, -0.25f, 0.25f,  // 6
+      -0.25f, -0.25f, -0.25f, // 1
+      0.25f, -0.25f, 0.25f,   // 5
 
-     0.25f,  0.25f,  0.25f, // 4
-     0.25f,  0.25f, -0.25f, // 3
-    -0.25f,  0.25f,  0.25f, // 7
+      0.25f, 0.25f, 0.25f,  // 4
+      0.25f, 0.25f, -0.25f, // 3
+      -0.25f, 0.25f, 0.25f, // 7
 
-    -0.25f,  0.25f, -0.25f, // 0
-    -0.25f,  0.25f,  0.25f, // 7
-     0.25f,  0.25f, -0.25f  // 3
+      -0.25f, 0.25f, -0.25f, // 0
+      -0.25f, 0.25f, 0.25f,  // 7
+      0.25f, 0.25f, -0.25f   // 3
   };
 
   // Vertex Buffer Object (for vertex coordinates)
@@ -199,7 +202,8 @@ int main() {
   proj_location = glGetUniformLocation(shader_program, "proj_matrix");
 
   // Render loop
-  while(!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window))
+  {
 
     processInput(window);
 
@@ -215,7 +219,8 @@ int main() {
   return 0;
 }
 
-void render(double currentTime) {
+void render(double currentTime)
+{
   float f = (float)currentTime * 0.3f;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -243,20 +248,22 @@ void render(double currentTime) {
   glUniformMatrix4fv(mv_location, 1, GL_FALSE, glm::value_ptr(mv_matrix));
 
   proj_matrix = glm::perspective(glm::radians(50.0f),
-                                 (float) gl_width / (float) gl_height,
+                                 (float)gl_width / (float)gl_height,
                                  0.1f, 1000.0f);
   glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(proj_matrix));
 
   glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void processInput(GLFWwindow *window) {
-  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+void processInput(GLFWwindow *window)
+{
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, 1);
 }
 
 // Callback function to track window size and update viewport
-void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+void glfw_window_size_callback(GLFWwindow *window, int width, int height)
+{
   gl_width = width;
   gl_height = height;
   printf("New viewport: (width: %d, height: %d)\n", width, height);
