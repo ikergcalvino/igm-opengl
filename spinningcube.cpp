@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // GLM library to deal with matrix operations
 #include <glm/glm.hpp>
@@ -24,6 +26,7 @@ void render(double);
 
 GLuint shader_program = 0;        // shader program to set render pipeline
 GLuint vao = 0;                   // Vertext Array Object to set input data
+GLuint texture = 0;               // Texture to paste on polygon
 GLint mv_location, proj_location; // Uniforms for transformation matrices
 
 int main()
@@ -201,6 +204,28 @@ int main()
   mv_location = glGetUniformLocation(shader_program, "mv_matrix");
   proj_location = glGetUniformLocation(shader_program, "proj_matrix");
 
+  // Load image for texture
+  int width, height, nrChannels;
+  // Before loading the image, we flip it vertically because
+  // Images: 0.0 top of y-axis  OpenGL: 0.0 bottom of y-axis
+  stbi_set_flip_vertically_on_load(1);
+  unsigned char *data = stbi_load("texture.jpg", &width, &height, &nrChannels, 0);
+  // Image from http://www.flickr.com/photos/seier/4364156221
+  // CC-BY-SA 2.0
+  if (data)
+  {
+    // Generate texture from image
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+  }
+  else
+  {
+    printf("Failed to load texture\n");
+  }
+
+  // Free image once texture is generated
+  stbi_image_free(data);
+
   // Render loop
   while (!glfwWindowShouldClose(window))
   {
@@ -229,6 +254,7 @@ void render(double currentTime)
 
   glUseProgram(shader_program);
   glBindVertexArray(vao);
+  glBindTexture(GL_TEXTURE_2D, texture);
 
   glm::mat4 mv_matrix, proj_matrix;
 
