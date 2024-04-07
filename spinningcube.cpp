@@ -1,9 +1,6 @@
 // Copyright (C) 2021 Emilio J. Padrón
 // Released as Free Software under the X11 License
 // https://spdx.org/licenses/X11.html
-//
-// Strongly inspired by spinnycube.cpp in OpenGL Superbible
-// https://github.com/openglsuperbible
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -118,10 +115,6 @@ int main()
   glDeleteShader(vs);
   glDeleteShader(fs);
 
-  // Vertex Array Object
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-
   // Cube to be rendered
   //
   //          0        3
@@ -181,10 +174,22 @@ int main()
       0.25f, 0.25f, -0.25f   // 3
   };
 
+  float texCoords[] = {
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f};
+
+  // Vertex Array Object
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
   // Vertex Buffer Object (for vertex coordinates)
-  GLuint vbo = 0;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  GLuint vbo[2];
+  glGenBuffers(2, vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_positions), vertex_positions, GL_STATIC_DRAW);
 
   // Vertex attributes
@@ -192,17 +197,28 @@ int main()
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   glEnableVertexAttribArray(0);
 
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+
+  // 1: vertex texCoord attribute
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(1);
+
   // Unbind vbo (it was conveniently registered by VertexAttribPointer)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   // Unbind vao
   glBindVertexArray(0);
 
-  // Uniforms
-  // - Model-View matrix
-  // - Projection matrix
-  mv_location = glGetUniformLocation(shader_program, "mv_matrix");
-  proj_location = glGetUniformLocation(shader_program, "proj_matrix");
+  // Create texture object
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  // Set the texture wrapping/filtering options (on the currently bound texture object)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Load image for texture
   int width, height, nrChannels;
@@ -225,6 +241,12 @@ int main()
 
   // Free image once texture is generated
   stbi_image_free(data);
+
+  // Uniforms
+  // - Model-View matrix
+  // - Projection matrix
+  mv_location = glGetUniformLocation(shader_program, "mv_matrix");
+  proj_location = glGetUniformLocation(shader_program, "proj_matrix");
 
   // Render loop
   while (!glfwWindowShouldClose(window))
