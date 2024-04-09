@@ -89,7 +89,7 @@ int main()
       "}";
 
   // Fragment Shader
-  const char* fragment_shader =
+  const char *fragment_shader =
       "#version 130\n"
 
       "out vec4 frag_col;"
