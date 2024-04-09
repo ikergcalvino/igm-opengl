@@ -74,8 +74,10 @@ int main()
       "#version 130\n"
 
       "in vec4 v_pos;"
+      "in vec2 tex_coord;"
 
       "out vec4 vs_color;"
+      "out vec2 vs_tex_coord;"
 
       "uniform mat4 mv_matrix;"
       "uniform mat4 proj_matrix;"
@@ -83,6 +85,7 @@ int main()
       "void main() {"
       "  gl_Position = proj_matrix * mv_matrix * v_pos;"
       "  vs_color = v_pos * 2.0 + vec4(0.4, 0.4, 0.4, 0.0);"
+      "  vs_tex_coord = tex_coord;"
       "}";
 
   // Fragment Shader
@@ -175,12 +178,12 @@ int main()
   };
 
   float texCoords[] = {
-      0.0f, 0.0f,
       1.0f, 0.0f,
       1.0f, 1.0f,
       0.0f, 0.0f,
-      1.0f, 1.0f,
-      0.0f, 1.0f};
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 1.0f};
 
   // Vertex Array Object
   glGenVertexArrays(1, &vao);
