@@ -89,15 +89,22 @@ int main()
       "}";
 
   // Fragment Shader
-  const char *fragment_shader =
+  const char* fragment_shader =
       "#version 130\n"
 
       "out vec4 frag_col;"
 
       "in vec4 vs_color;"
+      "in vec2 vs_tex_coord;"
+
+      "uniform sampler2D theTexture;"
 
       "void main() {"
-      "  frag_col = vs_color;"
+      "  if (vs_tex_coord != vec2(0.0, 0.0)) {"
+      "    frag_col = texture(theTexture, vs_tex_coord);"
+      "  } else {"
+      "    frag_col = vs_color;"
+      "  }"
       "}";
 
   // Shaders compilation
