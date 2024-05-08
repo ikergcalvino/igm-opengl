@@ -4,6 +4,8 @@
 #include <osg/MatrixTransform>
 #include <osgGA/TrackballManipulator>
 #include <osg/PositionAttitudeTransform>
+#include <osg/Texture2D>
+#include <osg/TexGen>
 
 // Define a rotation callback class
 class SpinCallback : public osg::NodeCallback
@@ -59,22 +61,32 @@ int main(int argc, char *argv[])
     lightSource->getLight()->setPosition(osg::Vec4(5.0, 5.0, 5.0, 1.0));
     lightSource->getLight()->setDiffuse(osg::Vec4(1.0, 0.5, 1.0, 1.0));
 
-    auto ss = root->getOrCreateStateSet();
-    ss->setMode(GL_LIGHT1, osg::StateAttribute::ON);
+    auto state = root->getOrCreateStateSet();
+    state->setMode(GL_LIGHT1, osg::StateAttribute::ON);
 
     auto light = new osg::PositionAttitudeTransform;
     light->addChild(lightSource);
     light->setPosition(osg::Vec3(5.0, 0.0, 1.0));
     light->setScale(osg::Vec3(0.2, 0.2, 0.2));
 
+    auto texture = new osg::Texture2D();
+    auto image = osgDB::readImageFile("spinningcube.png");
+    texture->setImage(image);
+
     auto cube1 = new osg::PositionAttitudeTransform;
     cube1->addChild(loadedModel);
     cube1->setUpdateCallback(new SpinCallback);
+
+    auto state_cube1 = cube1->getOrCreateStateSet();
+    state_cube1->setTextureAttributeAndModes(0, texture);
 
     auto cube2 = new osg::PositionAttitudeTransform;
     cube2->addChild(loadedModel);
     cube2->setPosition(osg::Vec3(2.0, 0.0, 0.0));
     cube2->setUpdateCallback(new SpinCallback);
+
+    auto state_cube2 = cube2->getOrCreateStateSet();
+    state_cube2->setTextureAttributeAndModes(0, texture);
 
     root->addChild(light);
     root->addChild(cube1);
