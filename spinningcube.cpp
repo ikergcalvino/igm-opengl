@@ -9,36 +9,32 @@
 class SpinCallback : public osg::NodeCallback
 {
 public:
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    virtual void operator()(osg::Node *node, osg::NodeVisitor *nv)
     {
-        osg::PositionAttitudeTransform* pat = dynamic_cast<osg::PositionAttitudeTransform*>(node);
+        osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *>(node);
+
         if (pat)
         {
-            double time = nv->getFrameStamp()->getSimulationTime(); // Tiempo de simulación en segundos
+            double time = nv->getFrameStamp()->getSimulationTime();
 
-            // Calcular ángulos de rotación en grados para cada eje
-            double angleX = osg::inDegrees(time * 40.0); // Rotación en el eje X
-            double angleY = osg::inDegrees(time * 30.0); // Rotación en el eje Y
-            double angleZ = osg::inDegrees(time * 20.0); // Rotación en el eje Z
+            double angleX = osg::inDegrees(time * 40.0);
+            double angleY = osg::inDegrees(time * 30.0);
+            double angleZ = osg::inDegrees(time * 20.0);
 
-            // Crear cuaternión acumulando las rotaciones sobre cada eje
-            osg::Quat rotationX(angleX, osg::Vec3(1, 0, 0)); // Rotación alrededor del eje X
-            osg::Quat rotationY(angleY, osg::Vec3(0, 1, 0)); // Rotación alrededor del eje Y
-            osg::Quat rotationZ(angleZ, osg::Vec3(0, 0, 1)); // Rotación alrededor del eje Z
+            osg::Quat rotationX(angleX, osg::Vec3(1, 0, 0));
+            osg::Quat rotationY(angleY, osg::Vec3(0, 1, 0));
+            osg::Quat rotationZ(angleZ, osg::Vec3(0, 0, 1));
 
-            // Combinar las rotaciones en un solo cuaternión (en orden Y, X, Z)
             osg::Quat finalRotation = rotationY * rotationX * rotationZ;
 
-            // Aplicar la rotación al PositionAttitudeTransform
             pat->setAttitude(finalRotation);
         }
 
-        // Continuar la visita a los nodos hijos
         traverse(node, nv);
     }
 };
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     // Check command-line parameters
     if (argc != 2)
@@ -55,19 +51,34 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    osg::ref_ptr<osg::Group> root (new osg::Group());
+    auto root = new osg::Group();
 
-    auto transform = new osg::PositionAttitudeTransform;
-    transform->addChild(loadedModel);
-    transform->setUpdateCallback(new SpinCallback);
+    auto lightSource = new osg::LightSource();
+    lightSource->addChild(loadedModel);
+    lightSource->getLight()->setLightNum(1);
+    lightSource->getLight()->setPosition(osg::Vec4(5.0, 5.0, 5.0, 1.0));
+    lightSource->getLight()->setDiffuse(osg::Vec4(1.0, 0.5, 1.0, 1.0));
 
-    auto transform2 = new osg::PositionAttitudeTransform;
-    transform2->addChild(loadedModel);
-    transform2->setPosition(osg::Vec3(2.0, 0.0, 0.0));
-    transform2->setUpdateCallback(new SpinCallback);
+    auto ss = root->getOrCreateStateSet();
+    ss->setMode(GL_LIGHT1, osg::StateAttribute::ON);
 
-    root->addChild(transform);
-    root->addChild(transform2);
+    auto light = new osg::PositionAttitudeTransform;
+    light->addChild(lightSource);
+    light->setPosition(osg::Vec3(5.0, 0.0, 1.0));
+    light->setScale(osg::Vec3(0.2, 0.2, 0.2));
+
+    auto cube1 = new osg::PositionAttitudeTransform;
+    cube1->addChild(loadedModel);
+    cube1->setUpdateCallback(new SpinCallback);
+
+    auto cube2 = new osg::PositionAttitudeTransform;
+    cube2->addChild(loadedModel);
+    cube2->setPosition(osg::Vec3(2.0, 0.0, 0.0));
+    cube2->setUpdateCallback(new SpinCallback);
+
+    root->addChild(light);
+    root->addChild(cube1);
+    root->addChild(cube2);
 
     // Create a viewer and set the scene data to the root node
     osgViewer::Viewer viewer;
