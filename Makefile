@@ -1,9 +1,10 @@
-todo: spinningcube
+CXXFLAGS=-Wall
+LDLIBS=-losg -losgViewer -losgDB
 
-LDLIBS=-lGL -lGLEW -lglfw -lm
+all: spinningcube
 
 spinningcube: spinningcube.cpp
-	g++ -o spinningcube spinningcube.cpp $(LDLIBS)
+	g++ -o $@ $< $(CXXFLAGS) $(LDLIBS)
 
 clean:
 	rm -f *.o *~
