@@ -1,5 +1,5 @@
 CXXFLAGS=-Wall
-LDLIBS=-losg -losgViewer -losgDB
+LDLIBS=-losg -losgViewer -losgDB -losgGA
 
 all: spinningcube
 
