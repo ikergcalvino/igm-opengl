@@ -61,7 +61,13 @@ int main(int argc, char* argv[])
     transform->addChild(loadedModel);
     transform->setUpdateCallback(new SpinCallback);
 
+    auto transform2 = new osg::PositionAttitudeTransform;
+    transform2->addChild(loadedModel);
+    transform2->setPosition(osg::Vec3(2.0, 0.0, 0.0));
+    transform2->setUpdateCallback(new SpinCallback);
+
     root->addChild(transform);
+    root->addChild(transform2);
 
     // Create a viewer and set the scene data to the root node
     osgViewer::Viewer viewer;
